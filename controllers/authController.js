@@ -1,6 +1,7 @@
 import User from "../models/User.js"
 import jwt from 'jsonwebtoken'
 import sendRegistrationEmail from "../services/email.service.js"
+import blacklistData from "../models/BlackList.js"
 export async function registerController(req,resp){
     try{
         const {name,email,password} = req.body
@@ -37,7 +38,7 @@ export async  function loginController(req,resp){
             return resp.status(400).json({message:"Password is invlaid"})
         }
         const token = jwt.sign(
-            {id:userExists._id,name:userExists.name,email:userExists.email},
+            {id:userExists._id},
             process.env.JWT_TOKEN,
             {expiresIn:'7d'}
         )
@@ -45,6 +46,23 @@ export async  function loginController(req,resp){
          await sendRegistrationEmail(userExists.email,userExists.name)
         return resp.status(201).json({message:"Login Successfully",userExists})
        
+    }
+    catch(error){
+        return resp.status(500).json({message:"Internal Server Error",error})
+    }
+}
+
+export async function logoutController(req,resp){
+    try{
+        const token = req.cookies.token
+        if(!token){
+            return resp.status(400).json({message:"Token is invlaid"})
+        }
+        const blacklist = await blacklistData.create({token})
+        if(blacklist){
+            resp.clearCookies("token")
+            return resp.status(201).json({message:"Token is blacklisted"})
+        }
     }
     catch(error){
         return resp.status(500).json({message:"Internal Server Error",error})
