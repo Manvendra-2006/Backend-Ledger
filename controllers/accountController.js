@@ -7,7 +7,6 @@ export async function createAccount(req,resp){
         }
         const account = await AccountData.create({
             user:user.id,
-
         })
         return resp.status(201).json({message:"Account created",account})
     }
