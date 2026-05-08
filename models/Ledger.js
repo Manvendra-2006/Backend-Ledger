@@ -43,3 +43,6 @@ ledgerSchema.pre('findOneAndDelete',preventLedgerModification)
 ledgerSchema.pre('findOneAndReplace',ledgerSchema)
 
 export default mongoose.model("ledgerData",ledgerSchema)
+
+
+// Ledger is a single source of truth 
