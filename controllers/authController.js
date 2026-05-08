@@ -1,6 +1,6 @@
 import User from "../models/User.js"
 import jwt from 'jsonwebtoken'
-import sendRegistrationEmail from "../services/email.service.js"
+import {sendRegistrationEmail} from "../services/email.service.js"
 import blacklistData from "../models/BlackList.js"
 export async function registerController(req,resp){
     try{
@@ -38,7 +38,7 @@ export async  function loginController(req,resp){
             return resp.status(400).json({message:"Password is invlaid"})
         }
         const token = jwt.sign(
-            {id:userExists._id},
+            {id:userExists._id,email:userExists.email,name:userExists.name},
             process.env.JWT_TOKEN,
             {expiresIn:'7d'}
         )

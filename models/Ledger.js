@@ -40,7 +40,7 @@ ledgerSchema.pre('remove',preventLedgerModification)
 ledgerSchema.pre('deleteMany',preventLedgerModification)
 ledgerSchema.pre('updateMany',preventLedgerModification)
 ledgerSchema.pre('findOneAndDelete',preventLedgerModification)
-ledgerSchema.pre('findOneAndReplace',ledgerSchema)
+ledgerSchema.pre('findOneAndReplace',preventLedgerModification)
 
 export default mongoose.model("ledgerData",ledgerSchema)
 

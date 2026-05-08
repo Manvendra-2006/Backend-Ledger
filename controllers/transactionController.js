@@ -1,6 +1,9 @@
+import mongoose from "mongoose"
 import AccountData from "../models/Account.js"
 import TransactionData from "../models/Transaction.js"
-function createTransaction(req,resp){
+import ledgerData from "../models/Ledger.js"
+import { sendtransactionEmail } from "../services/email.service.js"
+export  async function createTransaction(req,resp){
     try{
         // validate request or check request
         const {fromAccount,toAccount,amount,idempotenezkey} = req.body
@@ -63,7 +66,41 @@ function createTransaction(req,resp){
 
         // Create Transaction (PENDING)
 
+        const session = await mongoose.startSession()
+        session.startTransaction()
         
+        const transaction = await TransactionData.create({
+            fromAccount,
+            toAccount,
+            amount,
+            idempotenezkey,
+            status:"PENDING"
+        },{session})
+        // creating ledger entry debit
+        const debitLedgerEntry = await ledgerData.create({
+            account:fromAccount,
+            amount:amount,
+            transaction:transaction._id,
+            type:"DEBIT"
+        },{session})
+                // creating ledger entry credit
+        const creditLedgerEntry = await ledgerData.create({
+            account:toAccount,
+            amount:amount,
+            transaction:transaction._id,
+            type:"CREDIT"
+        },{session})
+        // making transaction completed
+        transaction.status = "COMPLETED"
+        await transaction.save({session})
+        // here end session
+        await session.commitTransaction()
+        session.endSession()
+
+        // send email notification
+        await sendtransactionEmail(req.user.email,req.user.name,amount,toAccount)
+
+        return resp.status(201).json({message:"Transaction completed successfully",transaction})
 
 
     }
