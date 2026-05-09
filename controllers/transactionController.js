@@ -78,6 +78,8 @@ export async function createTransaction(req, resp) {
             idempotenezkey,
             status: "PENDING"
         })
+
+        await transaction.save({session})
         // creating ledger entry debit
         const debitLedgerEntry = await ledgerData.create([{
             account: fromAccount,
@@ -85,6 +87,11 @@ export async function createTransaction(req, resp) {
             transaction: transaction._id,
             type: "DEBIT"
         }], { session })
+
+        // await (()=>{
+        //     return new Promise((resolve)=> setTimeout(resolve,100*1000))
+        // })() // Immedialtely incoked function expression
+
         // creating ledger entry credit
         const creditLedgerEntry = await ledgerData.create([{
             account: toAccount,
@@ -149,6 +156,7 @@ export async function createInitialFundsTransaction(req, resp) {
             status: "PENDING"
         })
 
+        await transaction.save({session})
         const debitLedgerEntry = await ledgerData.create([{
             account: fromUserAccount._id,
             amount: amount,

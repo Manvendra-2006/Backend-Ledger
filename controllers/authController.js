@@ -60,8 +60,8 @@ export async function logoutController(req,resp){
         }
         const blacklist = await blacklistData.create({token})
         if(blacklist){
-            resp.clearCookies("token")
-            return resp.status(201).json({message:"Token is blacklisted"})
+            resp.clearCookie("token")
+            return resp.status(201).json({message:"Token is blacklisted and user logout"})
         }
     }
     catch(error){
