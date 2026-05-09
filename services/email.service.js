@@ -73,3 +73,27 @@ export async function sendtransactionEmail(
 
    await sendEmail(userEmail, subject, text, html)
 }
+
+export async function sendTransactionFailedEmail(userEmail,name,amount,toAccount){
+    const subject = "Transaction Failed"
+   const text = `Hello ${name}, \n\n Your transaction was Failed. \n\n Amount Transferred: ₹${amount} \n Transferred To Account: ${toAccount} \n\n Thank you for using Backend Ledger. \n\n Best Regards, \n The Backend Ledger Team`
+
+   const html = `
+      <p>Hello ${name},</p>
+
+      <p>Your transaction was Failed.</p>
+
+      <p><b>Amount  Transferred:</b> ₹${amount}</p>
+
+      <p><b>Transferred To Account:</b> ${toAccount}</p>
+
+      <p>Thank you for using Backend Ledger.</p>
+
+      <p>
+         Best Regards,<br>
+         The Backend Ledger Team
+      </p>
+   `
+
+   await sendEmail(userEmail, subject, text, html)
+}
