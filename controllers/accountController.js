@@ -19,10 +19,10 @@ export async function createAccount(req,resp){
 export async function getUserAccountController(req,resp){
     try{
         const account = await AccountData.find({user:req.user.id})
-        if(!account){
-                return resp.status(404).json({message:"Account is not get"})
+        if(!account || account.length === 0){
+                return resp.status(404).json({message:"No accounts found for the logged-in user"})
         }
-        return resp.status(201).json({message:"Logged-in-user account is get",account})
+        return resp.status(200).json({message:"User accounts retrieved successfully",account})
     }
     catch(error){
         return resp.status(500).json({message:"Internal Server Error",error})
@@ -38,11 +38,11 @@ export async function getAccountBalanceController(req,resp){
         })   
 
         if(!accountExists){
-            return resp.status(404).json({message:"Account is not exists "})
+            return resp.status(404).json({message:"Account not found"})
         }
 
         const balance = await accountExists.getBalance()
-        return resp.status(201).json({
+        return resp.status(200).json({
             accountId:accountExists._id,
             balance:balance
         })
