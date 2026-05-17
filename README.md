@@ -317,7 +317,3 @@ Make sure your Google Cloud project has the Gmail API enabled and you've complet
 - Token blacklist entries can be cleaned up periodically (e.g., via a cron job) to remove expired tokens.
 
 ---
-
-## 📄 License
-
-MIT © 2026
